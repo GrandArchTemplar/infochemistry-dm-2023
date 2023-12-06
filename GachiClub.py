@@ -100,14 +100,25 @@ for i in range(n):
         else:
             print('Длина вектора должна быть 2^n!')
 
-flag = False
+flag1 = False
+flag2 = False
+flag3 = False
+flag4 = False
+flag5 = False
 for i in range(n):
     print(T0(massive[i]), T1(massive[i]), Line(massive[i]), Monot(massive[i]), Samod(massive[i]))       #вывод
-    if T0(massive[i]) and T1(massive[i]) and Line(massive[i]) and Monot(massive[i]) and Samod(massive[i]):
-        flag = True
-if flag:
-    print("Набор не является полным")
-else:
+    if T0(massive[i]) == 0:
+        flag1 = True
+    if T1(massive[i]) == 0:
+        flag2 = True
+    if Line(massive[i]) == 0:
+        flag3 = True
+    if Monot(massive[i]) == 0:
+        flag4 = True
+    if Samod(massive[i]) == 0:
+        flag5 = True
+if flag1 and flag2 and flag3 and flag4 and flag5:
     print("Набор является полным")
-
+else:
+    print("Набор не является полным")
 

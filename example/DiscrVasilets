@@ -1,0 +1,169 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    static boolean flagT0 = false;
+    static boolean flagT1 = false;
+    static boolean flagM = false;
+    static boolean flagS = false;
+    static boolean flagL = false;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Введите количество функций: ");
+        final int numFunctions = scanner.nextInt();
+
+        if (numFunctions <= 0) {
+            System.out.println("Количество функций должно быть > 0");
+            return;
+        }
+
+        for (int f = 1; f <= numFunctions; f++) {
+            System.out.print("Введите количество переменных для функции №" + f + ": ");
+            int numVariables = scanner.nextInt();
+
+            if (numVariables <= 0) {
+                System.out.println("Количество переменных должно быть > 0");
+                return;
+            }
+
+            System.out.println("\nВведите значения булевой функции №" + f + " для каждого набора переменных:");
+
+            StringBuilder booleanFunction = new StringBuilder();
+
+            for (int i = 0; i < Math.pow(2, numVariables); i++) {
+                System.out.print("Функция для " + String.format("%0" + numVariables + "d", Integer.parseInt(Integer.toBinaryString(i))) + ": ");
+                int inputValue = scanner.nextInt();
+                if (inputValue != 0 && inputValue != 1) {
+                    System.out.println("Функция должна быть равна 0 или 1");
+                    return;
+                }
+                booleanFunction.append(inputValue);
+            }
+
+            checkT0(booleanFunction.toString());
+            checkT1(booleanFunction.toString());
+            checkM(booleanFunction.toString());
+            checkS(booleanFunction.toString());
+            checkL(booleanFunction.toString());
+        }
+
+        checkFullity();
+    }
+
+
+
+    private static void checkT0(String booleanFunction) {
+        int value00 = Character.getNumericValue(booleanFunction.charAt(0));
+
+        if (value00 == 0) {
+            System.out.println("Функция принадлежит классу Т0.");
+
+        } else {
+            System.out.println("Функция не принадлежит классу Т0.");
+            flagT0 = true;
+        }
+
+    }
+
+    private static void checkT1(String booleanFunction) {
+        int value11 = Character.getNumericValue(booleanFunction.charAt(booleanFunction.length() - 1));
+        if (value11 == 1) {
+            System.out.println("Функция принадлежит классу Т1.");
+
+        } else {
+            System.out.println("Функция не принадлежит классу Т1.");
+            flagT1 = true;
+        }
+    }
+
+    private static void checkM(String booleanFunction) {
+        for (int i = 0; i < booleanFunction.length(); i++) {
+            for (int j = 0; j < booleanFunction.length(); j++) {
+                if (i <= j) {
+                    int valueI = Character.getNumericValue(booleanFunction.charAt(i));
+                    int valueJ = Character.getNumericValue(booleanFunction.charAt(j));
+                    if (valueI > valueJ) {
+                        System.out.println("Функция не принадлежит классу M.");
+                        flagM = true;
+                        return;
+                    }
+                }
+            }
+        }
+        System.out.println("Функция принадлежит классу M.");
+
+    }
+
+    private static void checkS(String booleanFunction) {
+        for (int i = 0; i < booleanFunction.length(); i++) {
+            int oppositeI = booleanFunction.length() - 1 - i;
+
+            int valueI = Character.getNumericValue(booleanFunction.charAt(i));
+            int valueOppositeI = Character.getNumericValue(booleanFunction.charAt(oppositeI));
+
+            if (valueI == valueOppositeI) {
+                System.out.println("Функция не принадлежит классу S.");
+                flagS = true;
+                return;
+            }
+        }
+        System.out.println("Функция принадлежит классу S.");
+
+    }
+
+    private static void checkL(String booleanFunction) {
+        List<Integer> functionList = new ArrayList<>();
+        for (int i = 0; i < booleanFunction.length(); i++) {
+            int value = Character.getNumericValue(booleanFunction.charAt(i));
+            functionList.add(value);
+        }
+        ArrayList<ArrayList<Integer>> triangle = new ArrayList<>();
+        ArrayList<Integer> firstValuesList = new ArrayList<>();
+
+        triangle.add((ArrayList<Integer>) functionList);
+        firstValuesList.add(triangle.get(0).get(0));
+
+        for (int i = 0; i < functionList.size() - 1; i++) {
+            ArrayList<Integer> nextLine = new ArrayList<>();
+            for (int j = 1; j < functionList.size() - i; j++) {
+                Integer resault = (triangle.get(i).get(j) ^ triangle.get(i).get(j - 1));
+                nextLine.add(resault);
+            }
+            triangle.add(nextLine);
+            firstValuesList.add(triangle.get(i + 1).get(0));
+        }
+
+
+        List<Integer> indexWith1 = new ArrayList<>();
+        for (int i = 0; i < firstValuesList.size(); i++) {
+            if (firstValuesList.get(i) == 1) {
+                indexWith1.add(i);
+            }
+        }
+
+        for (int i =0; i <  indexWith1.size(); i++) {
+            int count1 = Integer.bitCount(indexWith1.get(i));
+
+            if (count1 > 1) {
+                System.out.println("Функция не принадлежит классу L");
+                flagL = true;
+                return;
+            }
+        }
+        System.out.println("Функция принадлежит классу L");
+
+    }
+
+    private static void checkFullity() {
+        if (flagT0 && flagT1 && flagM && flagS && flagL) {
+            System.out.println("Данный набор является полным");
+        } else {
+            System.out.println("Данный набор не является полным");
+        }
+    }
+
+
+}

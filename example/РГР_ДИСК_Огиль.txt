@@ -1,0 +1,139 @@
+def get_integer(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            if value >= 0:
+                return value
+            else:
+                print('Введите натуральное число!')
+        except ValueError:
+            print('Введите целое число!')
+
+
+def get_binary_value(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+            if value == 0 or value == 1:
+                return value
+            else:
+                print('Введите 0 или 1!')
+        except ValueError:
+            print('Введите 0 или 1!')
+
+def is_T0(vector):
+    return 1 if vector[0] == 0 else 0
+
+def is_T1(vector):
+    return 1 if vector[-1] == 1 else 0
+    
+def is_M(vector):
+    sorted_vector = sorted(vector)
+    if vector == sorted_vector:
+        return 1
+    return 0
+
+
+def is_S(vector):
+    for i in range(int(len(vector) / 2)):
+        if (vector[i] == 1 and vector[len(vector) - 1 - i] == 0) or (
+                vector[i] == 0 and vector[len(vector) - 1 - i] == 1):
+            if vector.count(0) == vector.count(1):
+                return 1
+    return 0
+
+
+def is_L(vector, all_functions, number):
+    this_function = all_functions[number]
+    a = []
+    v_copy = vector[:]
+    for i in range(len(vector) - 1):
+        b = []
+        for j in range(len(vector) - 1 - i):
+            b.append((v_copy[j] + v_copy[j + 1]) % 2)
+        a.append(b)
+        v_copy = b
+    for i in range(len(a)):
+        if a[i][0] == 1:
+            count = 0
+            for j in range(len(this_function)):
+                if this_function[j][i + 1] == 1:
+                    count += 1
+            if count > 1:
+                return 0
+    return 1
+    
+def check_function_class(vector, analysis_result, class_name):
+    print(f"Булева функция {vector} ", end='')
+    if analysis_result == 0:
+        print('не ', end='')
+    print(f'принадлежит классу {class_name}')
+    
+print("Введите количество булевых функций: ", end='')
+all_functions = []
+vector_values = []  # Добавлено определение переменной vector_values
+number_of_functions = get_integer("")
+for func_number in range(1, number_of_functions + 1):
+    print(f"Введите количество аргументов для {func_number} функции: ", end='')
+    number_of_arguments = get_integer("")
+    print("Введите значения аргументов функции (0 или 1):")
+    number_of_rows = 2 ** number_of_arguments
+    function = []
+    for i in range(number_of_arguments):
+        mult = 2 ** i
+        arg = []
+        len_st = 0
+        while len_st != number_of_rows:
+            for _ in range(mult):
+                arg.append(0)
+                len_st += 1
+            for _ in range(mult):
+                arg.append(1)
+                len_st += 1
+        function.append(arg)
+    all_functions.append(function)
+    values = []
+    for _ in range(number_of_rows):
+        print("Значение для данной строки: ", end='')
+        for j in range(number_of_arguments):
+            print(function[number_of_arguments - 1 - j][_], end=' ')
+        print("- ", end='')
+        value = get_binary_value("")
+        print()
+        values.append(value)
+    vector_values.append(values)
+    
+results = []
+for vector in range(number_of_functions):
+    single_result = []
+    single_result.append(is_T0(vector_values[vector]))
+    check_function_class(vector + 1, single_result[0], "T0")
+    single_result.append(is_T1(vector_values[vector]))
+    check_function_class(vector + 1, single_result[1], "T1")
+    single_result.append(is_M(vector_values[vector]))
+    check_function_class(vector + 1, single_result[2], "монотонности")
+    single_result.append(is_S(vector_values[vector]))
+    check_function_class(vector + 1, single_result[3], "самодвойственности")
+    single_result.append(is_L(vector_values[vector], all_functions, vector))
+    check_function_class(vector + 1, single_result[4], "линейности")
+    results.append(single_result)
+    print()
+
+is_pfn = True
+if len(results) == 1:
+    print("В веденном вами наборе только одна функция, построить ПФН нельзя!")
+else:
+    for i in range(5):
+        count = 0
+        for j in range(len(results)):
+            if results[j][i] == 1:
+                count += 1
+        if count == len(results):
+            is_pfn = False
+            break
+
+if is_pfn:
+    print("Набор, который вы ввели является ПФН!")
+else:
+    print("Набор, который вы ввели НЕ является ПФН!")
+print("\nПФН - полный функциональный набор")

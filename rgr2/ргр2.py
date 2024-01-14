@@ -47,10 +47,6 @@ else:
 a=e[i-1]
 b=e[-2]
 
-print(kof1, kof2)
-print(a, b)
-print(compl)
-print(e[len(e)-3])
 for i in range (n):
     if a!=b and compl:
       if i%4==0:

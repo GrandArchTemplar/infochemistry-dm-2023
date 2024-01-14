@@ -7,10 +7,12 @@
 from expand_expression import manual_expand_expression
 
 # Пример использования
+```
 expr = "(0.5*a + 4*b)"
 n = 3
 result = manual_expand_expression(expr, n)
 print("Результат:", result)
+```
 
 ## Входные данные
 

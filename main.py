@@ -27,8 +27,8 @@ def solution(expr, n):
 
  
 # Test 1 
-# test_input = input()# "(0.5*a + 4*b)" 
-# test_n = int(input())# 3 
-test_input = "(0.5*a + 4*b)"
-test_n = 3
+test_input = input()# "(0.5*a + 4*b)" 
+test_n = int(input())# 3 
+# test_input = "(0.5*a + 4*b)"
+# test_n = 3
 print(solution(test_input, test_n))

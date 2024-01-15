@@ -52,6 +52,7 @@ def Samod(a):                                                  #проверяе
     return 1
 
 print('Введите количество функций')                             #запрашиваем количество функций
+n = input()
 f = 1 if n != '' else 0
 for i in range(len(n)):
     if n[i].isdigit(): pass
